@@ -3,18 +3,32 @@
 import { scrapeAndStoreProduct } from '@/lib/actions';
 import { FormEvent, useState } from 'react'
 
-const isValidAmazonProductURL = (url: string) => {
+import { useRouter } from 'next/navigation';
+
+const isValidProductURL = (url: string) => {
   try {
     const parsedURL = new URL(url);
-    const hostname = parsedURL.hostname;
+    const hostname = parsedURL.hostname.toLowerCase();
 
-    if(
-      hostname.includes('amazon.com') || 
-      hostname.includes ('amazon.') || 
-      hostname.endsWith('amazon')
-    ) {
-      return true;
-    }
+    // List of Indian e-commerce and quick commerce platforms
+    const validPlatforms = [
+      'amazon',
+      'flipkart',
+      'myntra',
+      'ajio',
+      'meesho',
+      'nykaa',
+      'reliancedigital',
+      'croma',
+      'tatacliq',
+      'jiomart',
+      'zeptonow',
+      'blinkit',
+      'swiggy',
+      'bigbasket'
+    ];
+
+    return validPlatforms.some(platform => hostname.includes(platform));
   } catch (error) {
     return false;
   }
@@ -25,21 +39,29 @@ const isValidAmazonProductURL = (url: string) => {
 const Searchbar = () => {
   const [searchPrompt, setSearchPrompt] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    const isValidLink = isValidAmazonProductURL(searchPrompt);
+    const isValidLink = isValidProductURL(searchPrompt);
 
-    if(!isValidLink) return alert('Please provide a valid Amazon link')
+    if(!isValidLink) return alert('Please provide a valid product link');
 
     try {
       setIsLoading(true);
 
-      // Scrape the product page
-      const product = await scrapeAndStoreProduct(searchPrompt);
-    } catch (error) {
-      console.log(error);
+      // Scrape the product page through Apify
+      const productId = await scrapeAndStoreProduct(searchPrompt);
+
+      if (productId) {
+         router.push(`/products/${productId}`);
+      } else {
+         alert("Scraping finished, but product ID was not returned. The scraper may have failed to extract data.");
+      }
+    } catch (error: any) {
+      console.error(error);
+      alert(`Scrape Error: ${error.message || 'Unknown network error has occurred!'}`);
     } finally {
       setIsLoading(false);
     }
@@ -63,7 +85,7 @@ const Searchbar = () => {
         className="searchbar-btn"
         disabled={searchPrompt === ''}
       >
-        {isLoading ? 'Searching...' : 'Search'}
+        {isLoading ? 'Scraping... (wait 10s)' : 'Search'}
       </button>
     </form>
   )

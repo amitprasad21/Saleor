@@ -22,7 +22,10 @@ const productSchema = new mongoose.Schema({
   reviewsCount: { type: Number },
   isOutOfStock: { type: Boolean, default: false },
   users: [
-    {email: { type: String, required: true}}
+    {
+      email: { type: String, required: true },
+      telegramChatId: { type: String } // Storing Chat ID for instant Telegram pushing
+    }
   ], default: [],
 }, { timestamps: true });
 

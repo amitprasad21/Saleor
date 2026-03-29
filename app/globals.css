@@ -11,11 +11,11 @@
 
 @layer base {
   body {
-    @apply font-inter;
+    /* Inter font is applied in layout.tsx via next/font/google */
   }
 }
 
-@layer utilities {
+@layer components {
   .btn {
     @apply py-4 px-4 bg-secondary hover:bg-opacity-70 rounded-[30px] text-white text-lg font-semibold;
   }
@@ -57,12 +57,12 @@
   }
 
   .trending-section {
-    @apply flex flex-col gap-10 px-6 md:px-20 py-24;
+    @apply flex flex-col gap-10 px-6 md:px-20 py-24 w-full max-w-7xl mx-auto;
   }
 
   /* PRODUCT DETAILS PAGE STYLES */
   .product-container {
-    @apply flex flex-col gap-16 flex-wrap px-6 md:px-20 py-24;
+    @apply flex flex-col gap-16 flex-wrap px-6 md:px-20 py-24 w-full max-w-7xl mx-auto;
   }
 
   .product-image {

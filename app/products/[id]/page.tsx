@@ -2,7 +2,7 @@
 import PriceInfoCard from "@/components/PriceInfoCard";
 import ProductCard from "@/components/ProductCard";
 import { getProductById, getSimilarProducts } from "@/lib/actions"
-import { formatNumber } from "@/lib/utils";
+import { formatNumber, addAffiliateTag } from "@/lib/utils";
 import { Product } from "@/types";
 import Image from "next/image";
 import Link from "next/link";
@@ -24,8 +24,8 @@ const ProductDetails = async ({ params: { id } }: Props) => {
       <div className="flex gap-28 xl:flex-row flex-col">
         <div className="product-image">
           <Image 
-            src={product.image}
-            alt={product.title}
+            src={product.image || '/logo.png'}
+            alt={product.title || 'Product'}
             width={580}
             height={400}
             className="mx-auto"
@@ -40,7 +40,7 @@ const ProductDetails = async ({ params: { id } }: Props) => {
               </p>
 
               <Link
-                href={product.url}
+                href={addAffiliateTag(product.url)}
                 target="_blank"
                 className="text-base text-black opacity-50"
               >
@@ -174,7 +174,7 @@ const ProductDetails = async ({ params: { id } }: Props) => {
             height={22}
           />
 
-          <Link href="/" className="text-base text-white">
+          <Link href={addAffiliateTag(product.url)} target="_blank" className="text-base text-white">
             Buy Now
           </Link>
         </button>

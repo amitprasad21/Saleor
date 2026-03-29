@@ -116,3 +116,26 @@ export const formatNumber = (num: number = 0) => {
     maximumFractionDigits: 0,
   });
 };
+
+/**
+ * Creates an affiliate link if it's a supported domain
+ */
+export const addAffiliateTag = (url: string) => {
+  try {
+    const parsedUrl = new URL(url);
+    const domain = parsedUrl.hostname.toLowerCase();
+
+    // Example: append Amazon Associate ID
+    if (domain.includes('amazon')) {
+      parsedUrl.searchParams.set('tag', process.env.AMAZON_AFFILIATE_TAG || 'your_tag_here');
+    }
+    // Example: append Flipkart Affiliate ID
+    else if (domain.includes('flipkart')) {
+      parsedUrl.searchParams.set('affid', process.env.FLIPKART_AFFILIATE_ID || 'your_id_here');
+    }
+
+    return parsedUrl.toString();
+  } catch (error) {
+    return url;
+  }
+};

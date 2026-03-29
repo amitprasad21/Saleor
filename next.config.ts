@@ -1,11 +1,17 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  experimental: {
-    serverActions: true,
-    serverComponentsExternalPackages: ['mongoose']
-  },
+  serverExternalPackages: ['mongoose', 'apify-client', 'puppeteer', 'puppeteer-extra', 'puppeteer-extra-plugin-stealth'],
   images: {
-    domains: ['m.media-amazon.com']
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'm.media-amazon.com',
+      },
+      {
+        protocol: 'https',
+        hostname: '**', // Allow other e-commerce images as per objective
+      }
+    ],
   }
 }
 
