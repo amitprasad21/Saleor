@@ -36,9 +36,9 @@ export default function RootLayout({
             
             {/* Standard Footer */}
             <footer className="w-full border-t mt-auto py-8 text-center text-sm text-gray-500 flex flex-col items-center gap-4">
-              <div className="flex items-center gap-2">
-                <img src="/logo.png" alt="logo" className="w-8 h-8 object-contain" />
-                <span className="font-spaceGrotesk font-bold text-[32px] text-primary">Saleor</span>
+              <div className="flex items-center gap-0">
+                <img src="/logo.png" alt="logo" className="w-[56px] h-[56px] object-contain -mr-1" />
+                <span className="font-spaceGrotesk font-bold text-[34px] text-primary">Saleor</span>
               </div>
               <p>© 2026 Saleor. All rights reserved.</p>
             </footer>

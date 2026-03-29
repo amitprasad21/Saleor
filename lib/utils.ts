@@ -139,3 +139,18 @@ export const addAffiliateTag = (url: string) => {
     return url;
   }
 };
+
+export const getPlatformIcon = (url: string) => {
+  try {
+    const domain = new URL(url).hostname.toLowerCase();
+    if (domain.includes('amazon')) return 'https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg';
+    if (domain.includes('flipkart')) return 'https://static-assets-web.flixcart.com/batman-returns/batman-returns/p/images/logo_lite-cbb357.png';
+    if (domain.includes('myntra')) return 'https://constant.myntassets.com/web/assets/img/icon.png';
+    if (domain.includes('jiomart')) return 'https://www.jiomart.com/assets/version1664452273/smartweb/images/jiomart_logo_beta.svg';
+    if (domain.includes('zeptonow')) return 'https://cdn.zeptonow.com/production/images/logo.svg';
+    if (domain.includes('blinkit')) return 'https://blinkit.com/images/header/blinkit_logo-3898547.png';
+    return '/logo.png'; // Fallback
+  } catch {
+    return '/logo.png';
+  }
+}

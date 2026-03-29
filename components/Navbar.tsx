@@ -14,42 +14,43 @@ const Navbar = async () => {
   return (
     <header className="w-full">
       <nav className="nav max-w-7xl mx-auto">
-        <Link href="/" className="flex items-center gap-2">
+        <Link href="/" className="flex items-center gap-0">
           <Image 
             src="/logo.png"
-            width={32}
-            height={32}
-            className="object-contain"
-            style={{ width: 'auto', height: 'auto', maxHeight: '32px' }}
+            width={60}
+            height={60}
+            className="object-contain -mr-2"
+            style={{ width: 'auto', height: 'auto', maxHeight: '60px' }}
             alt="Saleor logo"
           />
 
-          <p className="font-spaceGrotesk text-[32px] font-bold">
+          <p className="font-spaceGrotesk text-[34px] font-bold">
            <span className='text-primary'>Saleor</span>
           </p>
         </Link>
 
         <div className="flex items-center gap-5">
-          {userId && (
-            <Link 
-              href={`https://t.me/trackprice21bot?start=${userId}`}
-              target="_blank"
-              className="bg-[#24A1DE] text-white px-4 py-2 rounded-full text-sm font-semibold hover:opacity-80 transition hidden sm:block"
-            >
-              Connect Telegram 🚀
-            </Link>
-          )}
-
-          {navIcons.map((icon) => (
+          {/* Functional Icons jumping directly to App Sections */}
+          <Link href="#searchbar" className="hover:opacity-70 transition-opacity">
             <Image 
-              key={icon.alt}
-              src={icon.src}
-              alt={icon.alt}
+              src="/assets/icons/search.svg"
+              alt="search"
               width={28}
               height={28}
               className="object-contain"
             />
-          ))}
+          </Link>
+          <Link href="#trending" className="hover:opacity-70 transition-opacity">
+            <Image 
+              src="/assets/icons/black-heart.svg"
+              alt="favorites"
+              width={28}
+              height={28}
+              className="object-contain"
+            />
+          </Link>
+
+
 
           {/* Inline Auth Buttons */}
           <Show when="signed-out">

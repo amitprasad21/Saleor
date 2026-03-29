@@ -13,7 +13,7 @@ export async function scrapeAndStoreProduct(productUrl: string) {
   if(!productUrl) return;
 
   try {
-    connectToDB();
+    await connectToDB();
 
     // EXCLUSIVE APIFY INTEGRATION: Routes target through Apify Headless Servers
     const scrapedProduct = await scrapeWithApify(productUrl);
@@ -45,6 +45,20 @@ export async function scrapeAndStoreProduct(productUrl: string) {
       { upsert: true, new: true }
     );
 
+    // Completely automatic user tracking logic integration
+    const { userId } = await auth();
+    if (userId) {
+       const client = await clerkClient();
+       const userObj = await client.users.getUser(userId);
+       const userEmail = userObj.emailAddresses[0]?.emailAddress;
+       const telegramChatId = userObj?.publicMetadata?.telegramChatId as string | undefined;
+       
+       if (userEmail && !newProduct.users.some((user: any) => user.email === userEmail)) {
+          newProduct.users.push({ email: userEmail, telegramChatId });
+          await newProduct.save();
+       }
+    }
+
     revalidatePath(`/products/${newProduct._id}`);
     revalidatePath(`/`); // Synchronize the homepage Trending section
 
@@ -56,7 +70,7 @@ export async function scrapeAndStoreProduct(productUrl: string) {
 
 export async function getProductById(productId: string) {
   try {
-    connectToDB();
+    await connectToDB();
 
     const product = await Product.findOne({ _id: productId });
 
@@ -70,7 +84,7 @@ export async function getProductById(productId: string) {
 
 export async function getAllProducts() {
   try {
-    connectToDB();
+    await connectToDB();
 
     const products = await Product.find();
 
@@ -82,7 +96,7 @@ export async function getAllProducts() {
 
 export async function getTrendingProducts() {
   try {
-    connectToDB();
+    await connectToDB();
 
     // Fetch the products sorted by their discountRate (highest first)
     // We limit it to top 4 products for the homepage
@@ -98,7 +112,7 @@ export async function getTrendingProducts() {
 
 export async function getSimilarProducts(productId: string) {
   try {
-    connectToDB();
+    await connectToDB();
 
     const currentProduct = await Product.findById(productId);
 
@@ -153,6 +167,23 @@ export async function addUserEmailToProduct(productId: string, userEmail: string
         });
       }
     }
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export async function removeUserEmailFromProduct(productId: string, userEmail: string) {
+  try {
+    const product = await Product.findById(productId);
+
+    if(!product) return;
+
+    // Filter out the requested user to cleanly stop notifications but KEEP product in DB entirely
+    product.users = product.users.filter((user: User) => user.email !== userEmail);
+
+    await product.save();
+
+    revalidatePath(`/products/${productId}`);
   } catch (error) {
     console.log(error);
   }

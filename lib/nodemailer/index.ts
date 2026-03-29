@@ -23,22 +23,24 @@ export async function generateEmailBody(
 
   let subject = "";
   let body = "";
+  
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
+  const trackUrl = product._id ? `${siteUrl}/products/${product._id}` : siteUrl;
 
   switch (type) {
     case Notification.WELCOME:
       subject = `Welcome to Price Tracking for ${shortenedTitle}`;
       body = `
         <div>
-          <h2>Welcome to PriceWise 🚀</h2>
+          <h2>Welcome to Saleor 🚀</h2>
           <p>You are now tracking ${product.title}.</p>
-          <p>Here's an example of how you'll receive updates:</p>
           <div style="border: 1px solid #ccc; padding: 10px; background-color: #f8f8f8;">
-            <h3>${product.title} is back in stock!</h3>
-            <p>We're excited to let you know that ${product.title} is now back in stock.</p>
-            <p>Don't miss out - <a href="${product.url}" target="_blank" rel="noopener noreferrer">buy it now</a>!</p>
-            <img src="https://i.ibb.co/pwFBRMC/Screenshot-2023-09-26-at-1-47-50-AM.png" alt="Product Image" style="max-width: 100%;" />
+            <h4>Your tracking dashboard is live!</h4>
+            <div style="margin-top: 16px;">
+               <a href="${trackUrl}" target="_blank" rel="noopener noreferrer" style="background-color: #000; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; font-weight: bold;">View Tracking on Saleor</a>
+            </div>
+            <p>Or alternatively, you can buy it now <a href="${product.url}" target="_blank" rel="noopener noreferrer">here</a>.</p>
           </div>
-          <p>Stay tuned for more updates on ${product.title} and other products you're tracking.</p>
         </div>
       `;
       break;
@@ -48,6 +50,7 @@ export async function generateEmailBody(
       body = `
         <div>
           <h4>Hey, ${product.title} is now restocked! Grab yours before they run out again!</h4>
+          <p>You can check your price metrics on your <a href="${trackUrl}" target="_blank" rel="noopener noreferrer">Tracking Dashboard</a>.</p>
           <p>See the product <a href="${product.url}" target="_blank" rel="noopener noreferrer">here</a>.</p>
         </div>
       `;
@@ -58,6 +61,7 @@ export async function generateEmailBody(
       body = `
         <div>
           <h4>Hey, ${product.title} has reached its lowest price ever!!</h4>
+          <p>You can verify the latest drop in your <a href="${trackUrl}" target="_blank" rel="noopener noreferrer">Tracking Dashboard</a>.</p>
           <p>Grab the product <a href="${product.url}" target="_blank" rel="noopener noreferrer">here</a> now.</p>
         </div>
       `;
@@ -68,6 +72,7 @@ export async function generateEmailBody(
       body = `
         <div>
           <h4>Hey, ${product.title} is now available at a discount more than ${THRESHOLD_PERCENTAGE}%!</h4>
+          <p>Follow the historical change in your <a href="${trackUrl}" target="_blank" rel="noopener noreferrer">Tracking Dashboard</a>.</p>
           <p>Grab it right away from <a href="${product.url}" target="_blank" rel="noopener noreferrer">here</a>.</p>
         </div>
       `;
