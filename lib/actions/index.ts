@@ -110,6 +110,21 @@ export async function getTrendingProducts() {
   }
 }
 
+export async function getTrackedProductsForUser(userEmail: string) {
+  try {
+    await connectToDB();
+
+    // Query exclusively for products where the user's email exists in the users tracking array
+    const trackedProducts = await Product.find({ 'users.email': userEmail })
+      .sort({ updatedAt: -1 });
+
+    return trackedProducts;
+  } catch (error) {
+    console.log(error);
+    return [];
+  }
+}
+
 export async function getSimilarProducts(productId: string) {
   try {
     await connectToDB();

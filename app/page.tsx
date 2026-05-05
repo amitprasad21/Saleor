@@ -1,11 +1,22 @@
 import HeroCarousel from "@/components/HeroCarousel"
 import Searchbar from "@/components/Searchbar"
 import Image from "next/image"
-import { getTrendingProducts } from "@/lib/actions"
+import { auth, clerkClient } from '@clerk/nextjs/server';
+import { getTrendingProducts, getTrackedProductsForUser } from "@/lib/actions"
 import ProductCard from "@/components/ProductCard"
 
 const Home = async () => {
-  const trendingProducts = await getTrendingProducts();
+  const { userId } = await auth();
+  let email = '';
+  
+  if (userId) {
+    const client = await clerkClient();
+    const userObj = await client.users.getUser(userId);
+    email = userObj.emailAddresses[0]?.emailAddress ?? '';
+  }
+
+  // Load the authenticated user's isolated tracker instance, or default global trending list if not logged in
+  const displayedProducts = email ? await getTrackedProductsForUser(email) : await getTrendingProducts();
 
   return (
     <>
@@ -43,7 +54,7 @@ const Home = async () => {
         <h2 className="section-text">Trending</h2>
 
         <div className="flex flex-wrap gap-x-8 gap-y-16">
-          {trendingProducts?.map((product) => (
+          {displayedProducts?.map((product) => (
             <ProductCard key={product._id} product={product} />
           ))}
         </div>
